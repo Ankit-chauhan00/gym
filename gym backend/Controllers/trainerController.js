@@ -9,7 +9,7 @@ exports.addTrainer = (req, res)=>{
     res.status(201).json({message : "trainer Added", trainer})
   })
   .catch(err=>{
-    res.status(400).json({message : "Unable to crate the trainer"})
+    res.status(400).json({message : err.message , seccess : false, error: err})
   })
 }
 // get all trainer
@@ -33,4 +33,16 @@ exports.deleteTrainer = (req,res)=>{
   Trainer.findByIdAndDelete(req.params.id)
   .then(res.json({message: "trainer deleted"}))
   .catch(res.json({message: "nable to delete Trainer"}))
+}
+
+// update trainer 
+exports.updateTrainer = (req, res)=>{
+  Trainer.findByIdAndUpdate(req.params.id,req.body,{new : true, runValidators: true})
+  .then(updated =>{
+  if(!updated){
+    return res.status(404).json({message: 'Trainer Not found'})
+  }
+  res.json(updated);
+  })
+  .catch(err=>res.json({success: false, message: err}))
 }
